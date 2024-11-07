@@ -18,7 +18,7 @@ class MessageRemoteDataSourceImpl implements MessageRemoteDataSource {
   Future<Message> getMessage(String question) async {
     try {
       final response = await dio.post(
-        'http://13.200.243.230:5000/ask',
+        'https://64c3-13-200-243-230.ngrok-free.app',
         data: json.encode(
             {'question': question}), // Pass the question in the request body
         options: Options(
