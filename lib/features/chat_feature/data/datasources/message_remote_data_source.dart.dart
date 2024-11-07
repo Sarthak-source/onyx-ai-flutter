@@ -18,7 +18,7 @@ class MessageRemoteDataSourceImpl implements MessageRemoteDataSource {
   Future<Message> getMessage(String question) async {
     try {
       final response = await dio.post(
-        'https://onix-bot.onrender.com/ask',
+        'http://13.200.243.230:5000/ask',
         data: json.encode(
             {'question': question}), // Pass the question in the request body
         options: Options(
