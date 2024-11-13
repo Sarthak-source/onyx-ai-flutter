@@ -22,7 +22,7 @@ class CustomText extends StatelessWidget {
           spans.add(TextSpan(
             text: text.substring(startIndex, match.start),
             style: TextStyle(
-                color: isMine ? Colors.white : Colors.black), // Regular style
+                color: isMine ? Colors.white : Colors.black,fontSize: 14), // Regular style
           ));
         }
 
@@ -31,6 +31,7 @@ class CustomText extends StatelessWidget {
           text: match.group(1), // Get the bold text without **
           style: TextStyle(
               fontWeight: FontWeight.bold,
+              fontSize: 14,
               color: isMine ? Colors.white : Colors.black), // Bold style
         ));
 
@@ -43,7 +44,7 @@ class CustomText extends StatelessWidget {
         spans.add(TextSpan(
           text: text.substring(startIndex),
           style: TextStyle(
-              color: isMine ? Colors.white : Colors.black), // Regular style
+              color: isMine ? Colors.white : Colors.black,fontSize: 14), // Regular style
         ));
       }
 

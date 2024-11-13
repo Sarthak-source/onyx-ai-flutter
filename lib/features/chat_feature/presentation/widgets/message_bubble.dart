@@ -40,24 +40,21 @@ class MessageBubble extends StatelessWidget {
                   if (!message.isMine) ...[
                     CircleAvatar(
                       backgroundColor: chatBlue,
-                      radius:
-                          16.0, // Adjust the radius to make the avatar smaller
+                      radius: 16.0,
                       child: ClipOval(
                         child: SizedBox(
-                          width: 26.0, // Set a specific width
-                          height: 26.0, // Set a specific height
+                          width: 26.0,
+                          height: 26.0,
                           child: Image.asset(
-                            'assets/onyx-logo.png', // Replace with actual image URL
-                            fit: BoxFit
-                                .cover, // Ensure the image covers the CircleAvatar
+                            'assets/onyx-logo.png',
+                            fit: BoxFit.cover,
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(
-                        width: 8.0), // Space between avatar and message bubble
+                    const SizedBox(width: 8.0),
                   ],
-                  Flexible(child: backgroundBubble()),
+                  Flexible(child: backgroundBubble(context)),
                 ],
               ),
               if (message.error != null)
@@ -87,7 +84,7 @@ class MessageBubble extends StatelessWidget {
     );
   }
 
-  ClipRRect backgroundBubble() {
+  ClipRRect backgroundBubble(BuildContext context) {
     return ClipRRect(
       borderRadius: const BorderRadius.all(Radius.circular(12.0)),
       child: BubbleBackground(
@@ -202,6 +199,7 @@ class Message {
     required this.text,
     required this.sender,
     this.error, // Add this optional error message field
+    this.route,
     DateTime? timestamp,
   }) : timestamp = timestamp ?? DateTime.now();
 
@@ -209,6 +207,7 @@ class Message {
   final String text;
   final String sender;
   final String? error; // Error message, if any
+  final String? route;
   final DateTime timestamp;
 
   bool get isMine => owner == MessageOwner.myself;

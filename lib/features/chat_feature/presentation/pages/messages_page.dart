@@ -10,8 +10,6 @@ import 'package:onix_bot/features/chat_feature/data/repositories/message_reposit
 import 'package:onix_bot/features/chat_feature/presentation/cubits/messages_cubit.dart';
 import 'package:onix_bot/features/chat_feature/presentation/widgets/custom_text.dart';
 import 'package:onix_bot/features/chat_feature/presentation/widgets/message_bubble.dart';
-import 'package:onix_bot/features/first_feature/presentation/pages/first_page.dart';
-import 'package:onix_bot/features/second_feature/presentation/pages/second_page.dart';
 
 class OnixBotChatPage extends StatelessWidget {
   const OnixBotChatPage({super.key});
@@ -20,26 +18,8 @@ class OnixBotChatPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final TextEditingController controller = TextEditingController();
     final FocusNode focusNode = FocusNode();
-    OverlayEntry? commandPopoverEntry;
+    //OverlayEntry? commandPopoverEntry;
     OverlayEntry? chatPopoverEntry;
-
-    focusNode.addListener(() {
-      if (focusNode.hasFocus && controller.text.startsWith('/')) {
-        _showCommandPopover(
-            context, commandPopoverEntry, chatPopoverEntry, controller.text);
-      }
-    });
-
-    controller.addListener(() {
-      final text = controller.text;
-      if (text.startsWith('/')) {
-        context.read<MessageCubit>().filterCommands(text.substring(1));
-        _showCommandPopover(
-            context, commandPopoverEntry, chatPopoverEntry, text);
-      } else {
-        _removeCommandPopover(commandPopoverEntry);
-      }
-    });
 
     return BlocProvider(
       create: (context) {
@@ -139,88 +119,6 @@ class OnixBotChatPage extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void _showCommandPopover(
-      BuildContext context,
-      OverlayEntry? commandPopoverEntry,
-      OverlayEntry? chatPopoverEntry,
-      String text) {
-    if (commandPopoverEntry != null) return;
-
-    final overlay = Overlay.of(context);
-    commandPopoverEntry = OverlayEntry(
-      builder: (context) {
-        return Positioned(
-          top: MediaQuery.of(context).size.height - 310,
-          left: context.isDesktop
-              ? (context.width * 0.70)
-              : (context.width * 0.1),
-          right: 20,
-          child: Material(
-            elevation: 10,
-            color: Colors.transparent,
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade900,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: BlocBuilder<MessageCubit, MessageState>(
-                builder: (context, state) {
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text(
-                        'Type your command here...',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      const SizedBox(height: 8),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: state.filteredCommands.length,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            title: Text(
-                              state.filteredCommands[index],
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                            onTap: () {
-                              log("Navigating to ${state.filteredCommands[index]}");
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    if (state.filteredCommands[index] ==
-                                        'Screen One') {
-                                      return const FirstPage();
-                                    } else {
-                                      return const SecondPage();
-                                    }
-                                  },
-                                ),
-                              );
-                              _removeCommandPopover(commandPopoverEntry);
-                              //_removeChatPopover(chatPopoverEntry);
-                            },
-                          );
-                        },
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
-          ),
-        );
-      },
-    );
-    overlay.insert(commandPopoverEntry);
-  }
-
-  void _removeCommandPopover(OverlayEntry? commandPopoverEntry) {
-    commandPopoverEntry?.remove();
   }
 
   void _showChatPopover(BuildContext context, OverlayEntry? chatPopoverEntry,

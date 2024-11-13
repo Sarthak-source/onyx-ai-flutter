@@ -18,7 +18,7 @@ class MessageRemoteDataSourceImpl implements MessageRemoteDataSource {
   Future<Message> getMessage(String question) async {
     try {
       final response = await dio.post(
-        'https://1c38-13-200-243-230.ngrok-free.app',
+        'https://onix-bot.onrender.com/ask',
         data: json.encode(
             {'question': question}), // Pass the question in the request body
         options: Options(
@@ -32,13 +32,69 @@ class MessageRemoteDataSourceImpl implements MessageRemoteDataSource {
         final data = response.data;
         log(data.toString());
 
-        return Message(
-          text: data['answer']['output_text'],
-          owner: MessageOwner.other,
-          sender: '',
-        );
+        // Check intent type
+        final intent = data['intent']['intent'];
+
+        // Handle different intents
+        if (intent == 'open_screen_command') {
+          // Handle navigation intent
+          final route = data['intent']['route'];
+          log('Navigation command detected, route: $route');
+
+          return Message(
+            text: 'Navigating to screen...', // Placeholder message
+            owner: MessageOwner.other,
+            sender: '',
+            route: route, // Pass route to be used in Flutter navigation
+          );
+        } else if (intent == 'view_order_details') {
+          // Handle order details intent
+          final orderNumber = data['intent']['order_number'];
+          final orderDetails = data['answer'];
+          log('Order details for order number: $orderNumber');
+
+          return Message(
+            text: orderDetails, // The detailed order information
+            owner: MessageOwner.other,
+            sender: '',
+          );
+        } else if (intent == 'update_order_status') {
+          // Handle order status update intent
+          final status = data['intent']['status'];
+          final updateStatusMessage = data['answer'];
+          log('Order status updated to: $status');
+
+          return Message(
+            text: updateStatusMessage, // The status update message
+            owner: MessageOwner.other,
+            sender: '',
+          );
+        } else if (intent == 'view_previous_orders') {
+          final updatePevOrderMessage = data['answer'];
+          // Handle conversation end intent
+          return Message(
+            text:
+                updatePevOrderMessage,
+            owner: MessageOwner.other,
+            sender: '',
+          );
+        } else if (intent == 'end_conversation') {
+          // Handle conversation end intent
+          return Message(
+            text:
+                'Thank you for chatting! If you have more questions, feel free to ask.',
+            owner: MessageOwner.other,
+            sender: '',
+          );
+        } else {
+          // Handle normal question response
+          return Message(
+            text: data['answer']['output_text'],
+            owner: MessageOwner.other,
+            sender: '',
+          );
+        }
       } else {
-        // Return a Message with an error description
         return Message(
           text: '😱',
           owner: MessageOwner.other,
@@ -48,7 +104,6 @@ class MessageRemoteDataSourceImpl implements MessageRemoteDataSource {
       }
     } catch (e) {
       log('Error: $e');
-      // Return a Message with an error description
       return Message(
         text: '😱',
         owner: MessageOwner.other,
