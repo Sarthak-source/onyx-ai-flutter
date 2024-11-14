@@ -39,10 +39,12 @@ class MessageRemoteDataSourceImpl implements MessageRemoteDataSource {
         if (intent == 'open_screen_command') {
           // Handle navigation intent
           final route = data['intent']['route'];
+          final message = data['intent']['message'];
+
           log('Navigation command detected, route: $route');
 
           return Message(
-            text: 'Navigating to screen...', // Placeholder message
+            text: "$message $route", // Placeholder message
             owner: MessageOwner.other,
             sender: '',
             route: route, // Pass route to be used in Flutter navigation
@@ -73,10 +75,19 @@ class MessageRemoteDataSourceImpl implements MessageRemoteDataSource {
           final updatePevOrderMessage = data['answer'];
           // Handle conversation end intent
           return Message(
-            text:
-                updatePevOrderMessage,
+            text: updatePevOrderMessage,
             owner: MessageOwner.other,
             sender: '',
+          );
+        } else if (intent == 'select_intent_command') {
+          final selectIntent = data['answer'];
+          final options = data['intent']['options'];
+          // Handle conversation end intent
+          return Message(
+            text: selectIntent,
+            owner: MessageOwner.other,
+            sender: '',
+            options: options
           );
         } else if (intent == 'end_conversation') {
           // Handle conversation end intent

@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onix_bot/features/chat_feature/domain/repositories/message_repository_impl.dart';
 import 'package:onix_bot/features/chat_feature/presentation/widgets/message_bubble.dart';
@@ -44,6 +45,7 @@ class MessageState {
 
 class MessageCubit extends Cubit<MessageState> {
   final MessageRepository repository;
+  final TextEditingController controller = TextEditingController();
 
   MessageCubit({required this.repository}) : super(MessageState());
 

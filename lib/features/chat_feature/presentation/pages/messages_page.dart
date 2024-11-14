@@ -16,7 +16,6 @@ class OnixBotChatPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController controller = TextEditingController();
     final FocusNode focusNode = FocusNode();
     //OverlayEntry? commandPopoverEntry;
     OverlayEntry? chatPopoverEntry;
@@ -41,7 +40,7 @@ class OnixBotChatPage extends StatelessWidget {
                   context.read<MessageCubit>().popOverClose(false);
                 } else {
                   _showChatPopover(
-                      context, chatPopoverEntry, controller, focusNode);
+                      context, chatPopoverEntry, context.read<MessageCubit>().controller, focusNode);
                   context.read<MessageCubit>().popOverClose(true);
                 }
               },

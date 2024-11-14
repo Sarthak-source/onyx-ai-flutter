@@ -1,7 +1,9 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onix_bot/core/style/app_colors.dart';
+import 'package:onix_bot/features/chat_feature/presentation/cubits/messages_cubit.dart';
 
 @immutable
 class MessageBubble extends StatelessWidget {
@@ -19,69 +21,115 @@ class MessageBubble extends StatelessWidget {
     final messageAlignment =
         !message.isMine ? Alignment.topLeft : Alignment.topRight;
 
-    return FractionallySizedBox(
-      alignment: messageAlignment,
-      widthFactor: 0.8,
-      child: Align(
+    return BlocBuilder<MessageCubit, MessageState>(builder: (context, state) {
+      return FractionallySizedBox(
         alignment: messageAlignment,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 20.0),
-          child: Column(
-            crossAxisAlignment: message.isMine
-                ? CrossAxisAlignment.end
-                : CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: message.isMine
-                    ? MainAxisAlignment.end
-                    : MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (!message.isMine) ...[
-                    CircleAvatar(
-                      backgroundColor: chatBlue,
-                      radius: 16.0,
-                      child: ClipOval(
-                        child: SizedBox(
-                          width: 26.0,
-                          height: 26.0,
-                          child: Image.asset(
-                            'assets/onyx-logo.png',
-                            fit: BoxFit.cover,
+        widthFactor: 0.8,
+        child: Align(
+          alignment: messageAlignment,
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(vertical: 6.0, horizontal: 20.0),
+            child: Column(
+              crossAxisAlignment: message.isMine
+                  ? CrossAxisAlignment.end
+                  : CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: message.isMine
+                      ? MainAxisAlignment.end
+                      : MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (!message.isMine) ...[
+                      CircleAvatar(
+                        backgroundColor: chatBlue,
+                        radius: 16.0,
+                        child: ClipOval(
+                          child: SizedBox(
+                            width: 26.0,
+                            height: 26.0,
+                            child: Image.asset(
+                              'assets/onyx-logo.png',
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
+                      ),
+                      const SizedBox(width: 8.0),
+                    ],
+                    Flexible(child: backgroundBubble(context)),
+                  ],
+                ),
+                if (message.error != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4.0),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.error, color: Colors.red, size: 15),
+                        const SizedBox(width: 10),
+                        Flexible(
+                          child: Text(
+                            message.error!,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Colors.red,
+                              fontSize: 12.0,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                if (message.options != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: SizedBox(
+                      height:
+                          100, // Adjust height based on the number of options
+                      child: GridView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2, // Number of columns in the grid
+                          mainAxisSpacing: 4.0,
+                          crossAxisSpacing: 4.0,
+                          childAspectRatio:
+                              3, // Adjust for option button proportions
+                        ),
+                        itemCount: message.options!.length,
+                        itemBuilder: (context, index) {
+                          final option = message.options![index];
+                          return OutlinedButton(
+                            onPressed: () {
+                              context.read<MessageCubit>().controller.text =
+                                  option;
+                            },
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(
+                                  color: Colors.blueAccent), // Border color
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(8.0), // Border radius
+                              ),
+                            ),
+                            child: Text(
+                              option.toString(), // Display the option text
+                              style: const TextStyle(
+                                  color: Colors.blueAccent), // Text color
+                              textAlign: TextAlign.center,
+                            ),
+                          );
+                        },
                       ),
                     ),
-                    const SizedBox(width: 8.0),
-                  ],
-                  Flexible(child: backgroundBubble(context)),
-                ],
-              ),
-              if (message.error != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 4.0),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.error, color: Colors.red, size: 15),
-                      const SizedBox(width: 10),
-                      Flexible(
-                        child: Text(
-                          message.error!,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: Colors.red,
-                            fontSize: 12.0,
-                          ),
-                        ),
-                      ),
-                    ],
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   ClipRRect backgroundBubble(BuildContext context) {
@@ -200,6 +248,7 @@ class Message {
     required this.sender,
     this.error, // Add this optional error message field
     this.route,
+    this.options,
     DateTime? timestamp,
   }) : timestamp = timestamp ?? DateTime.now();
 
@@ -209,6 +258,7 @@ class Message {
   final String? error; // Error message, if any
   final String? route;
   final DateTime timestamp;
+  final List? options;
 
   bool get isMine => owner == MessageOwner.myself;
 }
