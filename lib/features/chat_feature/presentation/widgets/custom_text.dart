@@ -27,13 +27,13 @@ class CustomText extends StatelessWidget {
         final List<TextSpan> spans = [];
         final linkRegex = RegExp(r'https?://[^\s]+'); // Match URLs
         final numberRegex = RegExp(r'\b\d+\b'); // Match numbers
-        final satrtsRegex = RegExp(r'^/');
+        final startsRegex = RegExp(r'^/');
 
         int segmentStart = 0;
         final matches = [
           ...linkRegex.allMatches(textSegment),
           ...numberRegex.allMatches(textSegment),
-          ...satrtsRegex.allMatches(textSegment),
+          ...startsRegex.allMatches(textSegment),
         ];
         matches.sort(
             (a, b) => a.start.compareTo(b.start)); // Sort matches by position

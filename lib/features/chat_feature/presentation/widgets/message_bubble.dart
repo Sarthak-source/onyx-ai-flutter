@@ -83,41 +83,40 @@ class MessageBubble extends StatelessWidget {
                   ),
                 if (message.options != null)
                   Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
+                    padding: const EdgeInsets.only(top: 8.0, left: 38),
                     child: SizedBox(
                       height:
-                          100, // Adjust height based on the number of options
-                      child: GridView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2, // Number of columns in the grid
-                          mainAxisSpacing: 4.0,
-                          crossAxisSpacing: 4.0,
-                          childAspectRatio:
-                              3, // Adjust for option button proportions
-                        ),
+                          145, // Adjust height based on the number of options
+                      child: ListView.builder(
+                        padding: EdgeInsets.zero,
+                        scrollDirection:
+                            Axis.vertical, // Scroll vertically for a list
                         itemCount: message.options!.length,
                         itemBuilder: (context, index) {
                           final option = message.options![index];
-                          return OutlinedButton(
-                            onPressed: () {
-                              context.read<MessageCubit>().controller.text =
-                                  option;
-                            },
-                            style: OutlinedButton.styleFrom(
-                              side: const BorderSide(
-                                  color: Colors.blueAccent), // Border color
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(8.0), // Border radius
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                            child: OutlinedButton(
+                              onPressed: () {
+                                context
+                                    .read<MessageCubit>()
+                                    .addMessageAndLoadResponse(option);
+                              },
+                              style: OutlinedButton.styleFrom(
+                                side: const BorderSide(
+                                    color: Colors.blueAccent), // Border color
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      8.0), // Border radius
+                                ),
                               ),
-                            ),
-                            child: Text(
-                              option.toString(), // Display the option text
-                              style: const TextStyle(
-                                  color: Colors.blueAccent), // Text color
-                              textAlign: TextAlign.center,
+                              child: Text(
+                                option.toString(), // Display the option text
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 10), // Text color
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                           );
                         },

@@ -53,12 +53,14 @@ class MessageRemoteDataSourceImpl implements MessageRemoteDataSource {
           // Handle order details intent
           final orderNumber = data['intent']['order_number'];
           final orderDetails = data['answer'];
+          final options = data['intent']['option'];
           log('Order details for order number: $orderNumber');
 
           return Message(
             text: orderDetails, // The detailed order information
             owner: MessageOwner.other,
             sender: '',
+            options: options
           );
         } else if (intent == 'update_order_status') {
           // Handle order status update intent
