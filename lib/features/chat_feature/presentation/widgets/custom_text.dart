@@ -7,77 +7,69 @@ import 'package:url_launcher/url_launcher.dart';
 class CustomText extends StatelessWidget {
   final String text;
   final bool isMine;
+  final Color linkColor;
+  final Color numberColor;
 
-  const CustomText(this.text, this.isMine, {super.key});
+  const CustomText(
+    this.text,
+    this.isMine, {
+    super.key,
+    this.linkColor = Colors.blue,
+    this.numberColor = const Color.fromARGB(255, 1, 171, 15),
+  });
 
   @override
   Widget build(BuildContext context) {
-    // Function to parse the message and apply bold, clickable styles
     List<TextSpan> parseText(String text) {
       final List<TextSpan> spans = [];
-      final boldRegex = RegExp(r'\*\*(.*?)\*\*'); // For bold text between **
-      //final linkRegex = RegExp(r'https?://[^\s]+'); // For links
-      //final numberRegex = RegExp(r'\b\d+\b'); // For standalone numbers
+      final boldRegex = RegExp(r'\*\*(.*?)\*\*'); // Matches bold text (**bold**)
+      final linkRegex = RegExp(r'https?://[^\s]+'); // Matches URLs
+      final numberRegex = RegExp(r'#\d+'); // Matches numbers like #5676777
 
       int startIndex = 0;
       final boldMatches = boldRegex.allMatches(text);
 
-      // Process text segments for clickable links and numbers
-      List<TextSpan> processTextSegments(String textSegment) {
-        final List<TextSpan> spans = [];
-        final linkRegex = RegExp(r'https?://[^\s]+'); // Match URLs
-        final numberRegex = RegExp(r'\b\d+\b'); // Match numbers
-        final startsRegex = RegExp(r'^/');
+      // Helper to parse non-bold text for links and numbers
+      List<TextSpan> processSegment(String segment) {
+        final List<TextSpan> segmentSpans = [];
+        final matches = [...linkRegex.allMatches(segment), ...numberRegex.allMatches(segment)]
+          ..sort((a, b) => a.start.compareTo(b.start));
 
         int segmentStart = 0;
-        final matches = [
-          ...linkRegex.allMatches(textSegment),
-          ...numberRegex.allMatches(textSegment),
-          ...startsRegex.allMatches(textSegment),
-        ];
-        matches.sort(
-            (a, b) => a.start.compareTo(b.start)); // Sort matches by position
 
         for (final match in matches) {
-          // Add text before match as regular text
           if (match.start > segmentStart) {
-            spans.add(TextSpan(
-              text: textSegment.substring(segmentStart, match.start),
-              style: TextStyle(
-                  color: isMine ? Colors.white : Colors.black, fontSize: 14),
+            segmentSpans.add(TextSpan(
+              text: segment.substring(segmentStart, match.start),
+              style: TextStyle(color: isMine ? Colors.white : Colors.black),
             ));
           }
 
-          // Check if match is a link or a number
           final matchedText = match.group(0)!;
+
           if (linkRegex.hasMatch(matchedText)) {
-            // Link text with tap to open URL
-            spans.add(TextSpan(
-              text: matchedText,
-              style: const TextStyle(
-                color: Colors.blue,
-                fontSize: 14,
-                decoration: TextDecoration.underline,
-              ),
-              recognizer: TapGestureRecognizer()
-                ..onTap = () async {
-                  if (await canLaunchUrl(Uri.tryParse(matchedText)!)) {
-                    await launchUrl(Uri.tryParse(matchedText)!);
-                  }
-                },
-            ));
+            // Link handling
+            final uri = Uri.tryParse(matchedText);
+            if (uri != null) {
+              segmentSpans.add(TextSpan(
+                text: matchedText,
+                style: TextStyle(color: linkColor, decoration: TextDecoration.underline),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () async {
+                    if (await canLaunchUrl(uri)) {
+                      await launchUrl(uri, mode: LaunchMode.externalApplication);
+                    }
+                  },
+              ));
+            }
           } else if (numberRegex.hasMatch(matchedText)) {
-            // Number text with tap for potential action
-            spans.add(TextSpan(
+            // Number handling (e.g., #5676777)
+            segmentSpans.add(TextSpan(
               text: matchedText,
-              style: const TextStyle(
-                color: Colors.orange,
-                fontSize: 14,
-                decoration: TextDecoration.underline,
-              ),
+              style: TextStyle(color: numberColor, decoration: TextDecoration.underline),
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
-                  // Handle tap on number (could be to copy or perform another action)
+                  // Custom action for the tapped number
                   log("Tapped on number: $matchedText");
                 },
             ));
@@ -86,31 +78,25 @@ class CustomText extends StatelessWidget {
           segmentStart = match.end;
         }
 
-        // Add any remaining text after the last match
-        if (segmentStart < textSegment.length) {
-          spans.add(TextSpan(
-            text: textSegment.substring(segmentStart),
-            style: TextStyle(
-                color: isMine ? Colors.white : Colors.black, fontSize: 14),
+        if (segmentStart < segment.length) {
+          segmentSpans.add(TextSpan(
+            text: segment.substring(segmentStart),
+            style: TextStyle(color: isMine ? Colors.white : Colors.black),
           ));
         }
 
-        return spans;
+        return segmentSpans;
       }
 
       for (final match in boldMatches) {
         if (match.start > startIndex) {
-          // Process any sub-text for links and numbers
-          spans.addAll(
-              processTextSegments(text.substring(startIndex, match.start)));
+          spans.addAll(processSegment(text.substring(startIndex, match.start)));
         }
 
-        // Add bold text
         spans.add(TextSpan(
           text: match.group(1),
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 14,
             color: isMine ? Colors.white : Colors.black,
           ),
         ));
@@ -118,9 +104,8 @@ class CustomText extends StatelessWidget {
         startIndex = match.end;
       }
 
-      // Process any remaining text after the last bold match
       if (startIndex < text.length) {
-        spans.addAll(processTextSegments(text.substring(startIndex)));
+        spans.addAll(processSegment(text.substring(startIndex)));
       }
 
       return spans;
