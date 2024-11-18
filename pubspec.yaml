@@ -38,6 +38,10 @@ dependencies:
   dio: ^5.7.0
   flutter_bloc: ^8.1.6
   url_launcher: ^6.3.1
+  pdf: ^3.11.1
+  printing: ^5.13.4
+  flutter_secure_storage: ^9.2.2
+  get_it: ^8.0.2
 
 dev_dependencies:
   flutter_test:

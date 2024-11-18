@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:onix_bot/features/chat_feature/presentation/cubits/messages_cubit.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CustomText extends StatelessWidget {
@@ -22,7 +24,8 @@ class CustomText extends StatelessWidget {
   Widget build(BuildContext context) {
     List<TextSpan> parseText(String text) {
       final List<TextSpan> spans = [];
-      final boldRegex = RegExp(r'\*\*(.*?)\*\*'); // Matches bold text (**bold**)
+      final boldRegex =
+          RegExp(r'\*\*(.*?)\*\*'); // Matches bold text (**bold**)
       final linkRegex = RegExp(r'https?://[^\s]+'); // Matches URLs
       final numberRegex = RegExp(r'#\d+'); // Matches numbers like #5676777
 
@@ -32,8 +35,10 @@ class CustomText extends StatelessWidget {
       // Helper to parse non-bold text for links and numbers
       List<TextSpan> processSegment(String segment) {
         final List<TextSpan> segmentSpans = [];
-        final matches = [...linkRegex.allMatches(segment), ...numberRegex.allMatches(segment)]
-          ..sort((a, b) => a.start.compareTo(b.start));
+        final matches = [
+          ...linkRegex.allMatches(segment),
+          ...numberRegex.allMatches(segment)
+        ]..sort((a, b) => a.start.compareTo(b.start));
 
         int segmentStart = 0;
 
@@ -53,11 +58,13 @@ class CustomText extends StatelessWidget {
             if (uri != null) {
               segmentSpans.add(TextSpan(
                 text: matchedText,
-                style: TextStyle(color: linkColor, decoration: TextDecoration.underline),
+                style: TextStyle(
+                    color: linkColor, decoration: TextDecoration.underline),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () async {
                     if (await canLaunchUrl(uri)) {
-                      await launchUrl(uri, mode: LaunchMode.externalApplication);
+                      await launchUrl(uri,
+                          mode: LaunchMode.externalApplication);
                     }
                   },
               ));
@@ -66,9 +73,14 @@ class CustomText extends StatelessWidget {
             // Number handling (e.g., #5676777)
             segmentSpans.add(TextSpan(
               text: matchedText,
-              style: TextStyle(color: numberColor, decoration: TextDecoration.underline),
+              style: TextStyle(
+                  color: numberColor, decoration: TextDecoration.underline),
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
+                  context
+                      .read<MessageCubit>()
+                      .addMessageAndLoadResponse('Open order $matchedText');
+
                   // Custom action for the tapped number
                   log("Tapped on number: $matchedText");
                 },
@@ -111,8 +123,10 @@ class CustomText extends StatelessWidget {
       return spans;
     }
 
-    return RichText(
-      text: TextSpan(children: parseText(text)),
-    );
+    return BlocBuilder<MessageCubit, MessageState>(builder: (context, state) {
+      return RichText(
+        text: TextSpan(children: parseText(text)),
+      );
+    });
   }
 }
