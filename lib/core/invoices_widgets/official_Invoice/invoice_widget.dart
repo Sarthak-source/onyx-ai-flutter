@@ -38,7 +38,6 @@ Future<void> printOfficialInvoice(BuildContext bcontext) async {
       bcontext.isRTL ? pw.TextDirection.rtl : pw.TextDirection.ltr;
 
   final pdf = pw.Document();
-  final pdf2 = pw.Document();
   final imageContainer = await imgContainer(imgPath: 'assets/images/Logo.png');
   final defaulttextstyle = await PWAppTextStyles.getDefaultTextStyle();
   pdf.addPage(

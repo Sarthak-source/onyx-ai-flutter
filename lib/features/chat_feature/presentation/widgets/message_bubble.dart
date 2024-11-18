@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:onix_bot/core/invoices_widgets/miniature_Invoice/invoice_widget.dart';
 import 'package:onix_bot/core/style/app_colors.dart';
 import 'package:onix_bot/features/chat_feature/presentation/cubits/messages_cubit.dart';
 
@@ -98,9 +99,15 @@ class MessageBubble extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(vertical: 4.0),
                             child: OutlinedButton(
                               onPressed: () {
-                                context
-                                    .read<MessageCubit>()
-                                    .addMessageAndLoadResponse(option);
+                                if (option.contains('print')) {
+                                  // Navigate to a specific screen
+                                  printMiniatureInvoice(context);
+                                } else {
+                                  // Add the message and load response for other options
+                                  context
+                                      .read<MessageCubit>()
+                                      .addMessageAndLoadResponse(option);
+                                }
                               },
                               style: OutlinedButton.styleFrom(
                                 side: const BorderSide(

@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:onix_bot/core/invoices_widgets/common_widgets2/img_container_widget.dart';
@@ -24,7 +23,7 @@ Future<void> printMiniatureInvoice(BuildContext bcontext) async {
   const vatAmount = '150.00';
 
   // TLV Encoding for ZATCA compliance
-  Uint8List zatcaEncodedData = encodeTLVData([
+  encodeTLVData([
     ['1', sellerName],
     ['2', vatRegistrationNumber],
     ['3', timestamp],
