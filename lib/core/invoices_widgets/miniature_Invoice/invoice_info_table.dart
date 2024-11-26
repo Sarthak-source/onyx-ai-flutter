@@ -8,25 +8,25 @@ pw.Widget invoiceInfoTable(BuildContext bcontext, pw.TextDirection dir) {
     pw.TableRow(
       children: [
         _cell(content: '10:24:21', showDivider: false),
-        _cell(content: 'invoice_number'.tr(bcontext), showDivider: true),
+        _cell(content: 'invoice_number', showDivider: true),
         _cell(content: '4898', showDivider: false),
-        _cell(content: 'payment_method'.tr(bcontext), showDivider: true),
+        _cell(content: 'payment_method', showDivider: true),
       ].reversed.toList(),
     ),
     pw.TableRow(
       children: [
         _cell(content: 'EGP', showDivider: false),
-        _cell(content: 'time'.tr(bcontext), showDivider: true),
+        _cell(content: 'time', showDivider: true),
         _cell(content: '10:24:21', showDivider: false),
-        _cell(content: 'invoice_date'.tr(bcontext), showDivider: true),
+        _cell(content: 'invoice_date', showDivider: true),
       ],
     ),
     pw.TableRow(
       children: [
         _cell(content: 'EGP', showDivider: false),
-        _cell(content: 'point_number'.tr(bcontext), showDivider: true),
+        _cell(content: 'point_number', showDivider: true),
         _cell(content: '10:24:21', showDivider: false),
-        _cell(content: 'cashier'.tr(bcontext), showDivider: true),
+        _cell(content: 'cashier', showDivider: true),
       ],
     ),
   ];

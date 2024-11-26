@@ -1,6 +1,5 @@
 
 import 'package:flutter/material.dart';
-import 'package:onix_bot/core/invoices_widgets/common_widgets2/img_container_widget.dart';
 import 'package:onix_bot/core/invoices_widgets/common_widgets2/pdf_view.dart';
 import 'package:onix_bot/core/invoices_widgets/encription/encode_TLV_Data.dart';
 import 'package:onix_bot/core/invoices_widgets/miniature_Invoice/invoice_summary.dart';
@@ -34,7 +33,7 @@ Future<void> printMiniatureInvoice(BuildContext bcontext) async {
   pw.TextDirection dir =
       bcontext.isRTL ? pw.TextDirection.rtl : pw.TextDirection.ltr;
   final pdf = pw.Document();
-  final imageContainer = await imgContainer(imgPath: 'assets/images/Logo.png');
+  //final imageContainer = await imgContainer(imgPath: 'assets/images/Logo.png');
   final defaulttextstyle = await PWAppTextStyles.getDefaultTextStyle();
   pdf.addPage(
     pw.Page(
@@ -55,9 +54,9 @@ Future<void> printMiniatureInvoice(BuildContext bcontext) async {
                     // mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                     mainAxisSize: pw.MainAxisSize.min,
                     children: [
-                      imageContainer,
+                      //imageContainer,
 
-                      pw.Text('all_direct_selling_invoice'.tr(bcontext),
+                      pw.Text('all_direct_selling_invoice',
                           style: defaulttextstyle.copyWith(
                             fontSize: 18,
                             fontWeight: pw.FontWeight.bold,
@@ -66,7 +65,7 @@ Future<void> printMiniatureInvoice(BuildContext bcontext) async {
                           mainAxisAlignment: pw.MainAxisAlignment.center,
                           children: [
                             pw.Text(
-                              '${'tax_number'.tr(bcontext)} :',
+                              '${'tax_number'} :',
                               style: defaulttextstyle.copyWith(fontSize: 9),
                             ),
                             pw.Text(
@@ -75,7 +74,7 @@ Future<void> printMiniatureInvoice(BuildContext bcontext) async {
                             ),
                           ]),
                       // pw.SizedBox(height: 15),
-                      pw.Text("${'merchant_name'.tr(bcontext)} قصر الاواني",
+                      pw.Text("${'merchant_name'} قصر الاواني",
                           style: defaulttextstyle.copyWith(
                               color: PdfColor.fromHex("#0C69C0"))),
                     ],
@@ -91,7 +90,7 @@ Future<void> printMiniatureInvoice(BuildContext bcontext) async {
                 pw.Container(
                   margin: const pw.EdgeInsets.only(left: 30, right: 30),
                   child: pw.Row(children: [
-                    pw.Text('${'client_name'.tr(bcontext)} : ',
+                    pw.Text('${'client_name'} : ',
                         style: defaulttextstyle.copyWith(
                             color: PdfColor.fromHex("#0C69C0"))),
                     pw.Text('اسلام سليمان-شركة المجد للصناعة',
@@ -118,6 +117,6 @@ Future<void> printMiniatureInvoice(BuildContext bcontext) async {
   );
   // Preview the PDF
   if (bcontext.mounted) {
-    showPreviewDialog(bcontext, pdf, bcontext.size!.width * 0.8);
+    showPreviewDialog(bcontext, pdf, 500 * 0.8);
   }
 }

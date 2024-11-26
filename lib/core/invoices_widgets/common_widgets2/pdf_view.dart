@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:onix_bot/core/customButton.dart';
-import 'package:onix_bot/core/localizations/app_localization.dart';
 import 'package:onix_bot/core/style/app_colors.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -52,7 +51,7 @@ class PreviewScreen extends StatelessWidget {
               ),
               circularRadius: 5,
               bgcColor: kCardGreenColor,
-              title: 'print'.tr(context),
+              title: 'print',
               textColor: whiteColor,
               width: 80,
               onPressed: () async {
@@ -64,7 +63,7 @@ class PreviewScreen extends StatelessWidget {
             CustomButton(
               circularRadius: 5,
               bgcColor: gray100Text,
-              title: 'close'.tr(context),
+              title: 'close',
               textColor: whiteColor,
               width: 80,
               onPressed: () => Navigator.pop(context),

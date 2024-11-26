@@ -49,6 +49,10 @@ class MessageCubit extends Cubit<MessageState> {
 
   MessageCubit({required this.repository}) : super(MessageState());
 
+  void removeChatPopover(OverlayEntry? chatPopoverEntry) {
+    chatPopoverEntry?.remove();
+  }
+
   void chatSwitch() {
     emit(state.copyWith(showChat: !state.showChat));
   }

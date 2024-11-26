@@ -36,7 +36,7 @@ class OnixBotChatPage extends StatelessWidget {
               shape: const CircleBorder(),
               onPressed: () {
                 if (state.isChatPopoverOpen) {
-                  _removeChatPopover(chatPopoverEntry);
+                  context.read<MessageCubit>().removeChatPopover(chatPopoverEntry);
                   context.read<MessageCubit>().popOverClose(false);
                 } else {
                   _showChatPopover(
@@ -136,6 +136,7 @@ class OnixBotChatPage extends StatelessWidget {
                 : (context.width * 0.1),
             right: 20,
             child: Material(
+              
               //color: Colors.transparent,
               child: GestureDetector(
                 onTap: () {
@@ -183,7 +184,7 @@ class OnixBotChatPage extends StatelessWidget {
         ),
         const SizedBox(width: 10),
         const Text(
-          "ChatBot",
+          "Chat Bot",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ],
@@ -228,7 +229,7 @@ class OnixBotChatPage extends StatelessWidget {
                   chatHeader(),
                   InkWell(
                       onTap: () {
-                        _removeChatPopover(chatPopoverEntry);
+                        context.read<MessageCubit>().removeChatPopover(chatPopoverEntry);
                       },
                       child: const Icon(Icons.remove))
                 ],
@@ -358,9 +359,7 @@ class OnixBotChatPage extends StatelessWidget {
     });
   }
 
-  void _removeChatPopover(OverlayEntry? chatPopoverEntry) {
-    chatPopoverEntry?.remove();
-  }
+  
 
   Widget _chatBody(
       BuildContext context, controller, focusNode, chatPopoverEntry) {
@@ -402,7 +401,7 @@ class OnixBotChatPage extends StatelessWidget {
                     chatHeader(),
                     InkWell(
                         onTap: () {
-                          _removeChatPopover(chatPopoverEntry);
+                          context.read<MessageCubit>().removeChatPopover(chatPopoverEntry);
                         },
                         child: const Icon(Icons.remove))
                   ],
@@ -426,7 +425,7 @@ class OnixBotChatPage extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            "Type your question or '/' for commands",
+                            "Type your question or tell me what to do",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 12,
@@ -447,6 +446,7 @@ class OnixBotChatPage extends StatelessWidget {
                         final message = state.messages[index];
                         return MessageBubble(
                           message: message,
+                          chatPopoverEntry: chatPopoverEntry,
                           child: CustomText(message.text, message.isMine),
                         );
                       },

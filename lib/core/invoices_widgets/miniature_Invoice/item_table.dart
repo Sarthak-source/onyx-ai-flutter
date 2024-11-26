@@ -21,7 +21,7 @@ childrenTableRow: [
         child: pw.Column(children: [
           pw.Text(
               maxLines: 3,
-              'total'.tr(bcontext),
+              'total',
               style: const pw.TextStyle(fontSize: 8)),
           
         ]),
@@ -33,7 +33,7 @@ childrenTableRow: [
         child: pw.Column(children: [
           pw.Text(
               maxLines: 3,
-              'price'.tr(bcontext),
+              'price',
               style: const pw.TextStyle(fontSize: 8)),
          
         ]),
@@ -46,7 +46,7 @@ childrenTableRow: [
         child: pw.Column(children: [
           pw.Text(
               maxLines: 3,
-              'quantity'.tr(bcontext),
+              'quantity',
               style: const pw.TextStyle(fontSize: 8)),
          
         ]),
@@ -58,7 +58,7 @@ childrenTableRow: [
         child: pw.Column(children: [
           pw.Text(
               maxLines: 3,
-              'product'.tr(bcontext),
+              'product',
               style: const pw.TextStyle(fontSize: 8)),
        
         ]),

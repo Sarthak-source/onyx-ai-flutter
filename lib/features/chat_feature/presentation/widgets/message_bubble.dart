@@ -12,10 +12,12 @@ class MessageBubble extends StatelessWidget {
     super.key,
     required this.message,
     required this.child,
+    this.chatPopoverEntry,
   });
 
   final Message message;
   final Widget child;
+  final OverlayEntry? chatPopoverEntry;
 
   @override
   Widget build(BuildContext context) {
@@ -99,9 +101,22 @@ class MessageBubble extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(vertical: 4.0),
                             child: OutlinedButton(
                               onPressed: () {
-                                if (option.contains('print')) {
+                                if (option
+                                    .toString()
+                                    .toLowerCase()
+                                    .contains('print')) {
                                   // Navigate to a specific screen
                                   printMiniatureInvoice(context);
+
+                                  // Delay the removal of the chat popover
+                                  Future.delayed(
+                                      const Duration(milliseconds: 500), () {
+                                    if (context.mounted) {
+                                      context
+                                          .read<MessageCubit>()
+                                          .removeChatPopover(chatPopoverEntry);
+                                    }
+                                  });
                                 } else {
                                   // Add the message and load response for other options
                                   context

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:onix_bot/core/invoices_widgets/common_widgets2/img_container_widget.dart';
 import 'package:onix_bot/core/invoices_widgets/common_widgets2/pdf_view.dart';
 import 'package:onix_bot/core/invoices_widgets/encription/encode_TLV_Data.dart';
 import 'package:onix_bot/core/invoices_widgets/miniature_Invoice/invoice_summary.dart';
@@ -38,7 +37,7 @@ Future<void> printOfficialInvoice(BuildContext bcontext) async {
       bcontext.isRTL ? pw.TextDirection.rtl : pw.TextDirection.ltr;
 
   final pdf = pw.Document();
-  final imageContainer = await imgContainer(imgPath: 'assets/images/Logo.png');
+  //final imageContainer = await imgContainer(imgPath: 'assets/images/Logo.png');
   final defaulttextstyle = await PWAppTextStyles.getDefaultTextStyle();
   pdf.addPage(
     pw.Page(
@@ -58,19 +57,19 @@ Future<void> printOfficialInvoice(BuildContext bcontext) async {
                   child: pw.Row(
                     // mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                     children: [
-                      imageContainer,
+                      //imageContainer,
                       pw.Column(
                         mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
                         crossAxisAlignment: pw.CrossAxisAlignment.start,
                         children: [
-                          pw.Text('all_direct_selling_invoice'.tr(bcontext),
+                          pw.Text('all_direct_selling_invoice',
                               style: defaulttextstyle.copyWith(
                                 fontSize: 18,
                                 fontWeight: pw.FontWeight.bold,
                               )),
                           pw.Row(children: [
                             pw.Text(
-                              '${'tax_number'.tr(bcontext)} :',
+                              '${'tax_number'} :',
                               style: defaulttextstyle.copyWith(fontSize: 9),
                             ),
                             pw.Text(

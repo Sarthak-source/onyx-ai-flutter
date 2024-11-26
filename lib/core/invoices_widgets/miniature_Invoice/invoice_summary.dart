@@ -9,17 +9,17 @@ pw.Widget invoiceSummary(BuildContext bcontext, pw.TextDirection dir) {
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         _summaryRowa(
-          'number_of_items'.tr(bcontext),
+          'number_of_items',
           '6',dir
         ),
         //  pw.Container(
         //       width: 100,
         //       child: pw.Divider(thickness: 0.5, color: const PdfColorGrey(0.3))),
-        _summaryRowa('total'.tr(bcontext), '1200',dir),
-        _summaryRowa('tax'.tr(bcontext), '200',dir),
-        _summaryRowa('net_total'.tr(bcontext), '1400',dir),
-        _summaryRowa('amount_paid'.tr(bcontext), '1400',dir),
-        _summaryRowa('remaining_balance'.tr(bcontext), '0.00',dir),
+        _summaryRowa('total', '1200',dir),
+        _summaryRowa('tax', '200',dir),
+        _summaryRowa('net_total', '1400',dir),
+        _summaryRowa('amount_paid', '1400',dir),
+        _summaryRowa('remaining_balance', '0.00',dir),
       ],
     )
   ]),);
