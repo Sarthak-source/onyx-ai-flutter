@@ -8,7 +8,7 @@ class MessageRepositoryImpl implements MessageRepository {
   MessageRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<Message> getMessage(String question) async {
-    return await remoteDataSource.getMessage(question);
+  Future<List<Message>> getMessage(String question) async {
+    return await remoteDataSource.getMessages(question);
   }
 }

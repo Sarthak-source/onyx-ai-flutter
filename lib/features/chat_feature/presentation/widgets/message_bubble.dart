@@ -262,6 +262,7 @@ class BubblePainter extends CustomPainter {
 enum MessageOwner { myself, other }
 
 @immutable
+// ignore: must_be_immutable
 class Message {
   Message({
     required this.owner,
@@ -274,7 +275,7 @@ class Message {
   }) : timestamp = timestamp ?? DateTime.now();
 
   final MessageOwner owner;
-  final String text;
+   String text;
   final String sender;
   final String? error; // Error message, if any
   final String? route;

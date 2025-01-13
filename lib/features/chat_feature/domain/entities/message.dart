@@ -6,17 +6,19 @@ class MessageModel extends Message {
   final String answer;
   final String relevantChunk;
 
-   MessageModel({
+  MessageModel({
     required super.owner,
     required super.text,
     required this.question,
     required this.answer,
-    required this.relevantChunk, required super.sender,
+    required this.relevantChunk,
+    required super.sender,
   });
 
   factory MessageModel.fromJson(Map<String, dynamic> json) {
     return MessageModel(
-      owner: json['owner'] == 'myself' ? MessageOwner.myself : MessageOwner.other,
+      owner:
+          json['owner'] == 'myself' ? MessageOwner.myself : MessageOwner.other,
       text: json['text'], // This might be replaced with a more relevant field
       question: json['question'],
       answer: json['answer'],

@@ -68,8 +68,9 @@ class MessageCubit extends Cubit<MessageState> {
       owner: MessageOwner.myself,
     );
 
-    final allMessagesUser = [...state.messages, userMessage];
-    allMessagesUser.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+    // Add the user message to the state and set loading/sending states
+    final allMessagesUser = List<Message>.from(state.messages)
+      ..add(userMessage);
     emit(state.copyWith(
       messages: allMessagesUser,
       isLoading: true,
@@ -77,18 +78,34 @@ class MessageCubit extends Cubit<MessageState> {
     ));
 
     try {
-      final botMessage = await repository.getMessage(userQuestion);
-      final allMessages = [...allMessagesUser, botMessage];
+      // Fetch the bot's response
+      final botMessages = await repository.getMessage(userQuestion);
+
+      // Manually parse HTML content in the bot's response (if any)
+      final parsedMessages = botMessages.map((message) {
+        if (message.text.contains('<table>')) {
+          message.text = _parseHtmlTableWithBox(message.text);
+        }
+        return message;
+      }).toList();
+
+      // Add the parsed bot messages to the conversation
+      final allMessages = List<Message>.from(allMessagesUser)
+        ..addAll(parsedMessages);
+
+      // Sorting the messages after both user and bot responses are added
       allMessages.sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
+      // Update the state with the combined list of messages
       emit(state.copyWith(
         messages: allMessages,
         isLoading: false,
         isSending: false,
       ));
     } catch (e) {
+      // Handle error and update the state
       emit(state.copyWith(
-        messages: [...state.messages],
+        messages: state.messages,
         isLoading: false,
         isSending: false,
         error: e.toString(),
@@ -96,14 +113,51 @@ class MessageCubit extends Cubit<MessageState> {
     }
   }
 
+  // Method to manually parse the HTML table content without using 'html' package
+  String _parseHtmlTableWithBox(String htmlText) {
+    final tableRegExp =
+        RegExp(r'<tr>(.*?)</tr>', dotAll: true); // Regex to match table rows
+    final rowRegExp =
+        RegExp(r'<td>(.*?)</td>', dotAll: true); // Regex to match table cells
+
+    StringBuffer parsedText = StringBuffer();
+
+    final tableRows = tableRegExp.allMatches(htmlText);
+
+    // Create the top border
+    parsedText.writeln(
+        '+${'-' * 80}+'); // Length of the dashes depends on the number of columns
+
+    for (var row in tableRows) {
+      final rowData = rowRegExp.allMatches(row.group(1) ?? '').map((match) {
+        return match.group(1)?.trim() ?? ''; // Extract cell data
+      }).join(' | ');
+
+      // Add box line with separators between columns
+      parsedText.writeln('| $rowData |');
+
+      // Add a gap between rows
+      parsedText.writeln(); // Blank line to create a gap between rows
+    }
+
+    // Create the bottom border
+    parsedText.writeln('+${'-' * 80}+');
+
+    return parsedText.toString().trim();
+  }
+
   void filterCommands(String query) {
     final allCommands = [
       'Screen One',
       'Screen Two'
-    ]; // Replace with your command list
+    ]; // Replace with your actual command list
+
+    // Perform filtering based on the query
     final filtered = allCommands
         .where((command) => command.toLowerCase().contains(query.toLowerCase()))
         .toList();
+
+    // Update the state with filtered commands
     emit(state.copyWith(
       messages: state.messages,
       isLoading: state.isLoading,

@@ -6,7 +6,7 @@ class GetMessages {
 
   GetMessages(this.repository);
 
-  Future<Message> call(String question) async {
+  Future<List<Message>> call(String question) async {
     return await repository.getMessage(question);
   }
 }
