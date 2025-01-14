@@ -19,7 +19,12 @@ class MessageRemoteDataSourceImpl implements MessageRemoteDataSource {
     try {
       final response = await dio.post(
         'https://apex.ultimatetek.in:6069/webhooks/rest/webhook',
-        data: json.encode({'message': question}),
+        data: json.encode({
+          'message': question,
+          'metadata': {
+            'sessId': 'sessionId',
+          },
+        }),
         options: Options(
           headers: {
             'Content-Type': 'application/json',
@@ -35,13 +40,17 @@ class MessageRemoteDataSourceImpl implements MessageRemoteDataSource {
         if (data is List && data.isNotEmpty) {
           // Parse all the messages from the response
           List<Message> messages = [];
-          for (var item in data) {
+          for (var item in data.reversed) {
             final messageContent = item['text'] as String;
             messages.add(Message(
-                text: messageContent,
-                owner: MessageOwner.other,
-                sender: ''));
+              text: messageContent,
+              owner: MessageOwner.other,
+              sender: '',
+            ));
           }
+
+          messages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+
           return messages;
         } else {
           throw Exception('Invalid response format or empty response');

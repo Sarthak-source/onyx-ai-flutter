@@ -83,7 +83,7 @@ class MessageCubit extends Cubit<MessageState> {
 
       // Manually parse HTML content in the bot's response (if any)
       final parsedMessages = botMessages.map((message) {
-        if (message.text.contains('<table>')) {
+        if (message.text.contains('<table')) {
           message.text = _parseHtmlTableWithBox(message.text);
         }
         return message;

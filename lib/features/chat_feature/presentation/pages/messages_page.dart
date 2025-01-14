@@ -36,11 +36,13 @@ class OnixBotChatPage extends StatelessWidget {
               shape: const CircleBorder(),
               onPressed: () {
                 if (state.isChatPopoverOpen) {
-                  context.read<MessageCubit>().removeChatPopover(chatPopoverEntry);
+                  context
+                      .read<MessageCubit>()
+                      .removeChatPopover(chatPopoverEntry);
                   context.read<MessageCubit>().popOverClose(false);
                 } else {
-                  _showChatPopover(
-                      context, chatPopoverEntry, context.read<MessageCubit>().controller, focusNode);
+                  _showChatPopover(context, chatPopoverEntry,
+                      context.read<MessageCubit>().controller, focusNode);
                   context.read<MessageCubit>().popOverClose(true);
                 }
               },
@@ -136,7 +138,6 @@ class OnixBotChatPage extends StatelessWidget {
                 : (context.width * 0.1),
             right: 20,
             child: Material(
-              
               //color: Colors.transparent,
               child: GestureDetector(
                 onTap: () {
@@ -195,7 +196,7 @@ class OnixBotChatPage extends StatelessWidget {
     return BlocBuilder<MessageCubit, MessageState>(builder: (context, state) {
       return Center(
         child: Container(
-          height: 550, // Adjust width as needed
+          height: context.height * 0.84, // Adjust width as needed
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             //color: Colors.white,
@@ -229,7 +230,9 @@ class OnixBotChatPage extends StatelessWidget {
                   chatHeader(),
                   InkWell(
                       onTap: () {
-                        context.read<MessageCubit>().removeChatPopover(chatPopoverEntry);
+                        context
+                            .read<MessageCubit>()
+                            .removeChatPopover(chatPopoverEntry);
                       },
                       child: const Icon(Icons.remove))
                 ],
@@ -359,8 +362,6 @@ class OnixBotChatPage extends StatelessWidget {
     });
   }
 
-  
-
   Widget _chatBody(
       BuildContext context, controller, focusNode, chatPopoverEntry) {
     //OverlayEntry? chatPopoverEntry;
@@ -401,7 +402,9 @@ class OnixBotChatPage extends StatelessWidget {
                     chatHeader(),
                     InkWell(
                         onTap: () {
-                          context.read<MessageCubit>().removeChatPopover(chatPopoverEntry);
+                          context
+                              .read<MessageCubit>()
+                              .removeChatPopover(chatPopoverEntry);
                         },
                         child: const Icon(Icons.remove))
                   ],
@@ -409,9 +412,9 @@ class OnixBotChatPage extends StatelessWidget {
               ),
             ),
             state.messages.isEmpty
-                ? const SizedBox(
-                    height: 450,
-                    child: Center(
+                ? SizedBox(
+                    height: context.height * 0.62,
+                    child: const Center(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
