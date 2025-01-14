@@ -71,6 +71,8 @@ class MessageCubit extends Cubit<MessageState> {
     // Add the user message to the state and set loading/sending states
     final allMessagesUser = List<Message>.from(state.messages)
       ..add(userMessage);
+
+    allMessagesUser.sort((a, b) => b.timestamp.compareTo(a.timestamp));
     emit(state.copyWith(
       messages: allMessagesUser,
       isLoading: true,
